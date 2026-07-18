@@ -1,6 +1,20 @@
-# ===========================
-# Dataset
-# ===========================
+"""
+=========================================================
+config.py
+Project Configuration
+Works on:
+1. Windows (VS Code)
+2. Google Colab
+3. Kaggle
+=========================================================
+"""
+
+from pathlib import Path
+import os
+
+# =========================================================
+# Image Configuration
+# =========================================================
 
 IMAGE_HEIGHT = 128
 IMAGE_WIDTH = 128
@@ -8,33 +22,97 @@ IMAGE_SIZE = (IMAGE_HEIGHT, IMAGE_WIDTH)
 
 NUM_CLASSES = 4
 
-# ===========================
-# Training
-# ===========================
+# =========================================================
+# Training Configuration
+# =========================================================
 
 BATCH_SIZE = 32
+
 LEARNING_RATE = 0.001
+
 LOCAL_EPOCHS = 1
+
 GLOBAL_ROUNDS = 10
-CLIENTS_PER_ROUND = 5
-# This line is required
+
 RANDOM_SEED = 42
 
-# ===========================
+# =========================================================
 # Federated Learning
-# ===========================
+# =========================================================
 
 NUM_CLIENTS = 25
 
-# ===========================
-# Paths
-# ===========================
+CLIENTS_PER_ROUND = 5
 
-from pathlib import Path
+# =========================================================
+# Project Directory
+# =========================================================
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 
-DATASET_PATH = PROJECT_DIR / "KidneyCT"
-MODELS_PATH = PROJECT_DIR / "models"
-RESULTS_PATH = PROJECT_DIR / "results"
-CHECKPOINT_PATH = PROJECT_DIR / "checkpoints"
+# =========================================================
+# Detect Environment
+# =========================================================
+
+# Google Colab
+if os.path.exists("/content"):
+
+    print("Running on Google Colab")
+
+    DATASET_PATH = Path("/content/drive/MyDrive/KidneyCT")
+
+    MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
+
+    RESULTS_PATH = Path("/content/drive/MyDrive/FederatedLearning/results")
+
+    CHECKPOINT_PATH = Path("/content/drive/MyDrive/FederatedLearning/checkpoints")
+
+# Kaggle
+elif os.path.exists("/kaggle"):
+
+    print("Running on Kaggle")
+
+    DATASET_PATH = Path("/kaggle/input/kidneyct/KidneyCT")
+
+    MODELS_PATH = PROJECT_DIR / "models"
+
+    RESULTS_PATH = PROJECT_DIR / "results"
+
+    CHECKPOINT_PATH = PROJECT_DIR / "checkpoints"
+
+# Windows / Linux Local
+else:
+
+    print("Running on Local Machine")
+
+    DATASET_PATH = PROJECT_DIR / "KidneyCT"
+
+    MODELS_PATH = PROJECT_DIR / "models"
+
+    RESULTS_PATH = PROJECT_DIR / "results"
+
+    CHECKPOINT_PATH = PROJECT_DIR / "checkpoints"
+
+# =========================================================
+# Create Required Directories
+# =========================================================
+
+MODELS_PATH.mkdir(parents=True, exist_ok=True)
+
+RESULTS_PATH.mkdir(parents=True, exist_ok=True)
+
+CHECKPOINT_PATH.mkdir(parents=True, exist_ok=True)
+
+
+# Google Colab
+if os.path.exists("/content"):
+
+    print("Running on Google Colab")
+
+    DATASET_PATH = Path("/content/drive/MyDrive/FederatedLearning/KidneyCT")
+
+    MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
+
+    RESULTS_PATH = Path("/content/drive/MyDrive/FederatedLearning/results")
+
+    CHECKPOINT_PATH = Path("/content/drive/MyDrive/FederatedLearning/checkpoints")

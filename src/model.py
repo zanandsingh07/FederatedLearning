@@ -112,3 +112,12 @@ def get_model():
     compile_model(model)
 
     return model
+
+def print_model_summary():
+    """
+    Print CNN architecture.
+    """
+
+    model = get_model()
+
+    model.summary()

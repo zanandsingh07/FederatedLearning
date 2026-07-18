@@ -176,7 +176,8 @@ def create_tf_dataset(df, shuffle=False):
             seed=config.RANDOM_SEED,
         )
 
-    dataset = dataset.batch(config.BATCH_SIZE)
+    dataset = dataset.batch(config.BATCH_SIZE,    drop_remainder=False
+)
 
     dataset = dataset.prefetch(
         tf.data.AUTOTUNE
@@ -213,3 +214,20 @@ def create_iid_clients(train_df):
         client_datasets.append(client_df)
 
     return client_datasets
+
+def get_client_dataset(client_df):
+    return create_tf_dataset(client_df, shuffle=True)
+
+def create_client_dataset(client_df):
+    """
+    Convert one client DataFrame into a TensorFlow Dataset.
+    """
+
+    train_dataset = create_tf_dataset(
+        client_df,
+        shuffle=True,
+    )
+
+    num_examples = len(client_df)
+
+    return train_dataset, num_examples

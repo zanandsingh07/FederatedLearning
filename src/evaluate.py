@@ -7,7 +7,8 @@ Evaluate Best Global Model
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-
+from sklearn.metrics import classification_report
+import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 import tensorflow as tf
@@ -116,7 +117,68 @@ def evaluate_global_model():
     )
 
     plt.show()
+    # ---------------------------------------------------
+    # Classification Report
+    # ---------------------------------------------------
 
+    print("\n" + "=" * 60)
+    print("CLASSIFICATION REPORT")
+    print("=" * 60)
+
+    report = classification_report(
+    y_true,
+    y_pred,
+    target_names=encoder.classes_,
+    digits=4,
+    )
+
+    print(report)
+
+# ---------------------------------------------------
+# Save Classification Report
+# ---------------------------------------------------
+
+    report_dict = classification_report(
+    y_true,
+    y_pred,
+    target_names=encoder.classes_,
+    output_dict=True,
+)
+
+    report_df = pd.DataFrame(report_dict).transpose()
+
+    report_path = config.RESULTS_PATH / "classification_report.csv"
+
+    report_df.to_csv(report_path)
+
+    print("\nClassification Report Saved")
+
+    print(report_path)
+   # ---------------------------------------------------
+# Save Overall Metrics
+# ---------------------------------------------------
+
+    metrics_df = pd.DataFrame({
+    "Metric": [
+        "Test Accuracy",
+        "Test Loss"
+    ],
+    "Value": [
+        accuracy,
+        loss
+    ]
+    })
+
+    metrics_path = config.RESULTS_PATH / "metrics.csv"
+
+    metrics_df.to_csv(
+    metrics_path,
+    index=False,
+)
+
+    print("\nMetrics Saved")
+
+    print(metrics_path)
     print("\nConfusion Matrix Saved")
 
     print(save_path)
@@ -136,6 +198,6 @@ def evaluate_global_model():
     return model, test_dataset, encoder
 
 
-if __name__ == "__main__":
+    if __name__ == "__main__":
 
-    evaluate_global_model()
+      evaluate_global_model()

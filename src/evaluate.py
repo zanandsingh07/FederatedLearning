@@ -198,6 +198,6 @@ def evaluate_global_model():
     return model, test_dataset, encoder
 
 
-    if __name__ == "__main__":
+if __name__ == "__main__":
 
       evaluate_global_model()

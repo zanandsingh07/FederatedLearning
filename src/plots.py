@@ -1,6 +1,8 @@
 """
+=========================================================
 plots.py
 Generate Training Curves
+=========================================================
 """
 
 import matplotlib.pyplot as plt
@@ -8,66 +10,138 @@ import pandas as pd
 
 from src import config
 
-history = pd.read_csv(
-    config.RESULTS_PATH / "history.csv"
-)
 
-# ------------------------------------------
-# Accuracy
-# ------------------------------------------
+def generate_plots():
 
-plt.figure(figsize=(8,5))
+    print("=" * 60)
+    print("Generating Training Curves")
+    print("=" * 60)
 
-plt.plot(
-    history["round"],
-    history["accuracy"],
-    marker="o",
-    linewidth=2,
-)
+    history = pd.read_csv(
+        config.RESULTS_PATH / "history.csv"
+    )
 
-plt.title("Global Accuracy vs Communication Rounds")
+    # ==========================================
+    # Accuracy Plot
+    # ==========================================
 
-plt.xlabel("Communication Round")
+    plt.figure(figsize=(10,6))
 
-plt.ylabel("Accuracy")
+    plt.plot(
+        history["round"],
+        history["train_accuracy"],
+        marker="o",
+        linewidth=2,
+        label="Training Accuracy"
+    )
 
-plt.grid(True)
+    plt.plot(
+        history["round"],
+        history["validation_accuracy"],
+        marker="s",
+        linewidth=2,
+        label="Validation Accuracy"
+    )
 
-plt.savefig(
-    config.RESULTS_PATH /
-    "accuracy_rounds.png",
-    dpi=300,
-)
+    plt.title(
+        "Training and Validation Accuracy",
+        fontsize=16,
+        fontweight="bold"
+    )
 
-plt.show()
+    plt.xlabel(
+        "Communication Round",
+        fontsize=13
+    )
 
-# ------------------------------------------
-# Loss
-# ------------------------------------------
+    plt.ylabel(
+        "Accuracy",
+        fontsize=13
+    )
 
-plt.figure(figsize=(8,5))
+    plt.grid(True, linestyle="--", alpha=0.4)
 
-plt.plot(
-    history["round"],
-    history["loss"],
-    marker="o",
-    linewidth=2,
-)
+    plt.legend(fontsize=12)
 
-plt.title("Global Loss vs Communication Rounds")
+    plt.tight_layout()
 
-plt.xlabel("Communication Round")
+    accuracy_path = (
+        config.RESULTS_PATH /
+        "accuracy_curve.png"
+    )
 
-plt.ylabel("Loss")
+    plt.savefig(
+        accuracy_path,
+        dpi=300,
+        bbox_inches="tight"
+    )
 
-plt.grid(True)
+    plt.show()
 
-plt.savefig(
-    config.RESULTS_PATH /
-    "loss_rounds.png",
-    dpi=300,
-)
+    # ==========================================
+    # Loss Plot
+    # ==========================================
 
-plt.show()
+    plt.figure(figsize=(10,6))
 
-print("Graphs saved successfully.")
+    plt.plot(
+        history["round"],
+        history["train_loss"],
+        marker="o",
+        linewidth=2,
+        label="Training Loss"
+    )
+
+    plt.plot(
+        history["round"],
+        history["validation_loss"],
+        marker="s",
+        linewidth=2,
+        label="Validation Loss"
+    )
+
+    plt.title(
+        "Training and Validation Loss",
+        fontsize=16,
+        fontweight="bold"
+    )
+
+    plt.xlabel(
+        "Communication Round",
+        fontsize=13
+    )
+
+    plt.ylabel(
+        "Loss",
+        fontsize=13
+    )
+
+    plt.grid(True, linestyle="--", alpha=0.4)
+
+    plt.legend(fontsize=12)
+
+    plt.tight_layout()
+
+    loss_path = (
+        config.RESULTS_PATH /
+        "loss_curve.png"
+    )
+
+    plt.savefig(
+        loss_path,
+        dpi=300,
+        bbox_inches="tight"
+    )
+
+    plt.show()
+
+    print("\nPlots Saved Successfully")
+
+    print(accuracy_path)
+
+    print(loss_path)
+
+
+if __name__ == "__main__":
+
+    generate_plots()

@@ -53,12 +53,21 @@ def train_federated():
     print("Test Images       :", len(test_df))
 
     # --------------------------------------------
+    # Validation Dataset
+    # --------------------------------------------
+
+    validation_dataset = create_tf_dataset(
+    valid_df,
+    shuffle=False,
+)
+
+    # --------------------------------------------
     # Test Dataset
     # --------------------------------------------
 
     test_dataset = create_tf_dataset(
-        test_df,
-        shuffle=False,
+    test_df,
+    shuffle=False,
     )
 
     # --------------------------------------------
@@ -184,9 +193,7 @@ def train_federated():
         # ----------------------------------------
 
         metrics = server.evaluate(
-
-            test_dataset
-
+         validation_dataset
         )
 
         acc = metrics["accuracy"]
@@ -194,10 +201,8 @@ def train_federated():
         loss = metrics["loss"]
 
         print()
-
-        print(f"Global Accuracy : {acc*100:.2f}%")
-
-        print(f"Global Loss     : {loss:.4f}")
+        print(f"Validation Accuracy : {acc*100:.2f}%")
+        print(f"Validation Loss     : {loss:.4f}")
 
         history["round"].append(
 

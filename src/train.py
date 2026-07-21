@@ -259,17 +259,24 @@ def train_federated():
 # Save Training History
 # ===============================================
 
+   # ===============================================
+# Save Training History
+# ===============================================
+
+    os.makedirs(
+    config.RESULTS_PATH,
+    exist_ok=True,
+    )
+
     history_df = pd.DataFrame(history)
 
     history_path = config.RESULTS_PATH / "history.csv"
 
     history_df.to_csv(
     history_path,
-    index=False
-    )
-
+    index=False,
+)
     print("\nTraining history saved.")
-
     print(history_path)
     print("=" * 70)
 

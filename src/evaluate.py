@@ -4,7 +4,12 @@ evaluate.py
 Evaluate Best Global Model
 =========================================================
 """
+import os
+import numpy as np
+import matplotlib.pyplot as plt
 
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
 import tensorflow as tf
 from sklearn.metrics import accuracy_score
 
@@ -56,6 +61,65 @@ def evaluate_global_model():
         test_dataset,
         verbose=1,
     )
+    # ---------------------------------------------------
+# Predictions
+# ---------------------------------------------------
+
+    print("\nGenerating Predictions...")
+
+    y_true = test_df["label"].values
+
+    predictions = model.predict(
+    test_dataset,
+    verbose=1,
+  )
+
+    y_pred = np.argmax(predictions, axis=1)
+
+# ---------------------------------------------------
+# Confusion Matrix
+# ---------------------------------------------------
+
+    cm = confusion_matrix(
+    y_true,
+    y_pred,
+  )
+
+    labels = encoder.classes_
+
+    disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=labels,
+    )
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    disp.plot(
+    cmap="Blues",
+    ax=ax,
+    colorbar=False,
+    )
+
+    plt.title("Confusion Matrix")
+
+    os.makedirs(
+    config.RESULTS_PATH,
+    exist_ok=True,
+    )
+
+    save_path = config.RESULTS_PATH / "confusion_matrix.png"
+
+    plt.savefig(
+    save_path,
+    dpi=300,
+    bbox_inches="tight",
+    )
+
+    plt.show()
+
+    print("\nConfusion Matrix Saved")
+
+    print(save_path)
 
     print()
 

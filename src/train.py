@@ -8,6 +8,7 @@ TensorFlow 2.21
 
 import os
 import random
+import pandas as pd
 
 from src import config
 
@@ -254,6 +255,22 @@ def train_federated():
 
     print("Federated Training Completed")
 
+# ===============================================
+# Save Training History
+# ===============================================
+
+    history_df = pd.DataFrame(history)
+
+    history_path = config.RESULTS_PATH / "history.csv"
+
+    history_df.to_csv(
+    history_path,
+    index=False
+    )
+
+    print("\nTraining history saved.")
+
+    print(history_path)
     print("=" * 70)
 
     return history

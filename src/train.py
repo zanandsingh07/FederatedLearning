@@ -114,13 +114,17 @@ def train_federated():
 
     history = {
 
-        "round": [],
+    "round": [],
 
-        "accuracy": [],
+    "train_accuracy": [],
 
-        "loss": []
+    "train_loss": [],
 
-    }
+    "validation_accuracy": [],
+
+    "validation_loss": []
+
+}
 
     best_accuracy = 0
 
@@ -161,21 +165,32 @@ def train_federated():
         client_weights = []
 
         client_sizes = []
-
+        train_acc_list = []
+        train_loss_list = []
         # ----------------------------------------
         # Local Training
         # ----------------------------------------
 
         for client in selected_clients:
 
+            print(f"\nTraining Client {client.client_id}")
+
             client.set_weights(global_weights)
 
-            weights, size, _ = client.train()
+            weights, size, history_local = client.train()
 
             client_weights.append(weights)
 
             client_sizes.append(size)
 
+        # Last epoch metrics
+            train_acc_list.append(
+            history_local["accuracy"][-1]
+             )
+
+            train_loss_list.append(
+            history_local["loss"][-1]
+            )
         # ----------------------------------------
         # FedAvg
         # ----------------------------------------
@@ -199,28 +214,33 @@ def train_federated():
         acc = metrics["accuracy"]
 
         loss = metrics["loss"]
+        avg_train_acc = sum(train_acc_list) / len(train_acc_list)
+
+        avg_train_loss = sum(train_loss_list) / len(train_loss_list)
 
         print()
-        print(f"Validation Accuracy : {acc*100:.2f}%")
-        print(f"Validation Loss     : {loss:.4f}")
 
-        history["round"].append(
+        print("=" * 50)
+        print("ROUND SUMMARY")
+        print("=" * 50)
 
-            rnd + 1
+        print(f"Average Train Accuracy : {avg_train_acc*100:.2f}%")
+        print(f"Average Train Loss     : {avg_train_loss:.4f}")
 
-        )
+        print()
 
-        history["accuracy"].append(
+        print(f"Validation Accuracy    : {acc*100:.2f}%")
+        print(f"Validation Loss        : {loss:.4f}")
+        
+        history["round"].append(rnd + 1)
 
-            acc
+        history["train_accuracy"].append(avg_train_acc)
 
-        )
+        history["train_loss"].append(avg_train_loss)
 
-        history["loss"].append(
+        history["validation_accuracy"].append(acc)
 
-            loss
-
-        )
+        history["validation_loss"].append(loss)
 
         # ----------------------------------------
         # Save Best Model

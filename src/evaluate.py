@@ -205,10 +205,31 @@ def evaluate_global_model():
 
     print("\nPrecision-Recall Curve Saved")
     print(pr_path)
-# ---------------------------------------------------
-# Save AP Scores
+    # ---------------------------------------------------
+# Average Precision Scores
 # ---------------------------------------------------
 
+    print("\n" + "=" * 60)
+    print("AVERAGE PRECISION (AP)")
+    print("=" * 60)
+
+    for class_name, ap in ap_scores.items():
+        print(f"{class_name:10s}: {ap:.4f}")
+
+    # Compute Macro AP
+    macro_ap = np.mean(list(ap_scores.values()))
+
+    # Compute Weighted AP
+    weighted_ap = average_precision_score(
+        y_true_bin,
+        predictions,
+        average="weighted"
+    )
+
+    print(f"\nMacro Average Precision    : {macro_ap:.4f}")
+    print(f"Weighted Average Precision : {weighted_ap:.4f}")
+
+    # Save AP scores
     ap_df = pd.DataFrame({
         "Class": list(ap_scores.keys()) + [
             "Macro Average",
@@ -222,34 +243,11 @@ def evaluate_global_model():
 
     ap_path = config.RESULTS_PATH / "average_precision.csv"
 
-    ap_df.to_csv(
-        ap_path,
-        index=False
-    )
+    ap_df.to_csv(ap_path, index=False)
 
     print("\nAverage Precision Saved")
     print(ap_path)
 # ---------------------------------------------------
-# Print Average Precision Scores
-# ---------------------------------------------------
-
-    print("\n" + "="*60)
-    print("AVERAGE PRECISION (AP)")
-    print("="*60)
-
-    for class_name, ap in ap_scores.items():
-        print(f"{class_name:10s}: {ap:.4f}")
-
-    macro_ap = np.mean(list(ap_scores.values()))
-
-    weighted_ap = average_precision_score(
-        y_true_bin,
-        predictions,
-        average="weighted"
-    )
-
-    print("\nMacro Average Precision    :", f"{macro_ap:.4f}")
-    print("Weighted Average Precision :", f"{weighted_ap:.4f}")
 # ---------------------------------------------------
 # ROC Curve (One-vs-Rest)
 # ---------------------------------------------------

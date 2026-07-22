@@ -10,8 +10,7 @@ Python 3.13
 from src.model import get_model
 from src.dataset import create_tf_dataset
 from src import config
-
-
+import tensorflow as tf
 class Client:
     """
     Federated Learning Client
@@ -71,17 +70,18 @@ class Client:
             epochs = config.LOCAL_EPOCHS
 
         print(f"\nTraining Client {self.client_id}")
-
+        
         history = self.model.fit(
 
-        self.train_dataset,
+            self.train_dataset,
 
-        epochs=epochs,
+            validation_data=self.valid_dataset,
 
-        verbose=1,
+            epochs=epochs,
 
-    )
+            verbose=1,
 
+        )      
         return (
 
         self.get_weights(),

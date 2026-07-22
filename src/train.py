@@ -131,7 +131,9 @@ def train_federated():
     # --------------------------------------------
     # Global Training
     # --------------------------------------------
+    best_accuracy = 0.0
 
+    wait = 0
     for rnd in range(config.GLOBAL_ROUNDS):
 
         print("\n")
@@ -246,33 +248,54 @@ def train_federated():
         # Save Best Model
         # ----------------------------------------
 
-        if acc > best_accuracy:
+        if acc > best_accuracy + config.MIN_DELTA:
 
             best_accuracy = acc
 
+            wait = 0
+
             os.makedirs(
-
                 config.MODELS_PATH,
-
                 exist_ok=True,
-
             )
 
             server.save_model(
-
                 os.path.join(
-
                     config.MODELS_PATH,
-
                     "best_global_model.keras",
-
                 )
-
             )
 
             print()
+            print("Best Global Model Saved")
 
-            print("Best Model Saved")
+        else:
+
+            wait += 1
+
+            print()
+
+            print(
+                f"No improvement "
+                f"({wait}/{config.GLOBAL_PATIENCE})"
+            )
+        if (
+            config.GLOBAL_EARLY_STOPPING
+            and wait >= config.GLOBAL_PATIENCE
+        ):
+
+            print()
+
+            print("=" * 60)
+            print("GLOBAL EARLY STOPPING TRIGGERED")
+            print("=" * 60)
+
+            print(
+                f"Training stopped after "
+                f"{rnd + 1} communication rounds."
+            )
+
+            break
 
     print()
 

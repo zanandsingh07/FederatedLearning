@@ -30,10 +30,11 @@ BATCH_SIZE = 32
 
 LEARNING_RATE = 0.001
 
-LOCAL_EPOCHS = 1
-
-GLOBAL_ROUNDS = 10
-
+LOCAL_EPOCHS = 10
+GLOBAL_ROUNDS = 20
+GLOBAL_EARLY_STOPPING = True
+GLOBAL_PATIENCE = 5
+MIN_DELTA = 0.0001
 RANDOM_SEED = 42
 
 # =========================================================

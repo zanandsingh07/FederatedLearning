@@ -19,7 +19,9 @@ from sklearn.preprocessing import label_binarize
 
 from sklearn.metrics import (
     roc_curve,
-    auc
+    auc,
+    precision_recall_curve,
+    average_precision_score
 )
 from src.dataset import (
     load_dataset,
@@ -139,6 +141,74 @@ def evaluate_global_model():
     )
 
     print(report)
+    # ---------------------------------------------------
+# Precision-Recall Curve (One-vs-Rest)
+# ---------------------------------------------------
+
+    print("\nGenerating Precision-Recall Curve...")
+
+# Convert labels to one-hot encoding
+    y_true_bin = label_binarize(
+    y_true,
+    classes=range(len(encoder.classes_))
+    )
+
+    plt.figure(figsize=(8,8))
+
+    for i, class_name in enumerate(encoder.classes_):
+
+        precision, recall, _ = precision_recall_curve(
+        y_true_bin[:, i],
+        predictions[:, i]
+    )
+
+    ap = average_precision_score(
+        y_true_bin[:, i],
+        predictions[:, i]
+    )
+
+    plt.plot(
+        recall,
+        precision,
+        linewidth=2,
+        label=f"{class_name} (AP = {ap:.3f})"
+    )
+
+    plt.xlabel(
+    "Recall",
+    fontsize=12
+    )
+
+    plt.ylabel(
+    "Precision",
+    fontsize=12
+    )
+
+    plt.title(
+    "Precision-Recall Curve (One-vs-Rest)",
+    fontsize=15,
+    fontweight="bold"
+    )
+
+    plt.grid(True)
+
+    plt.legend(
+    loc="lower left"
+)
+
+    pr_path = config.RESULTS_PATH / "precision_recall_curve.png"
+
+    plt.savefig(
+    pr_path,
+    dpi=300,
+    bbox_inches="tight"
+    )
+
+    plt.show()
+
+    print("\nPrecision-Recall Curve Saved")
+
+    print(pr_path)
 # ---------------------------------------------------
 # ROC Curve (One-vs-Rest)
 # ---------------------------------------------------

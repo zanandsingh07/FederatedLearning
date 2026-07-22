@@ -143,19 +143,19 @@ def evaluate_global_model():
 # ROC Curve (One-vs-Rest)
 # ---------------------------------------------------
 
-print("\nGenerating ROC Curve...")
+    print("\nGenerating ROC Curve...")
 
 # One-hot encode true labels
-y_true_bin = label_binarize(
+    y_true_bin = label_binarize(
     y_true,
     classes=range(len(encoder.classes_))
-)
+    )
 
-plt.figure(figsize=(8,8))
+    plt.figure(figsize=(8,8))
 
-for i, class_name in enumerate(encoder.classes_):
+    for i, class_name in enumerate(encoder.classes_):
 
-    fpr, tpr, _ = roc_curve(
+        fpr, tpr, _ = roc_curve(
         y_true_bin[:, i],
         predictions[:, i]
     )
@@ -170,7 +170,7 @@ for i, class_name in enumerate(encoder.classes_):
     )
 
 # Random classifier reference
-plt.plot(
+    plt.plot(
     [0,1],
     [0,1],
     linestyle="--",
@@ -178,33 +178,33 @@ plt.plot(
     color="gray",
 )
 
-plt.xlabel("False Positive Rate", fontsize=12)
+    plt.xlabel("False Positive Rate", fontsize=12)
 
-plt.ylabel("True Positive Rate", fontsize=12)
+    plt.ylabel("True Positive Rate", fontsize=12)
 
-plt.title(
+    plt.title(
     "ROC Curve (One-vs-Rest)",
     fontsize=15,
     fontweight="bold"
 )
 
-plt.legend(loc="lower right")
+    plt.legend(loc="lower right")
 
-plt.grid(True)
+    plt.grid(True)
 
-roc_path = config.RESULTS_PATH / "roc_curve.png"
+    roc_path = config.RESULTS_PATH / "roc_curve.png"
 
-plt.savefig(
+    plt.savefig(
     roc_path,
     dpi=300,
     bbox_inches="tight"
 )
 
-plt.show()
+    plt.show()
 
-print("\nROC Curve Saved")
+    print("\nROC Curve Saved")
 
-print(roc_path)
+    print(roc_path)
 # ---------------------------------------------------
 # Save Classification Report
 # ---------------------------------------------------
@@ -225,9 +225,9 @@ print(roc_path)
     print("\nClassification Report Saved")
 
     print(report_path)
-   # ---------------------------------------------------
-# Save Overall Metrics
-# ---------------------------------------------------
+    # ---------------------------------------------------
+    # Save Overall Metrics
+    # ---------------------------------------------------
 
     metrics_df = pd.DataFrame({
     "Metric": [

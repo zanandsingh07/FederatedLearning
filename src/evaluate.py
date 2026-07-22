@@ -15,6 +15,12 @@ import tensorflow as tf
 from sklearn.metrics import accuracy_score
 
 from src import config
+from sklearn.preprocessing import label_binarize
+
+from sklearn.metrics import (
+    roc_curve,
+    auc
+)
 from src.dataset import (
     load_dataset,
     split_dataset,
@@ -133,7 +139,72 @@ def evaluate_global_model():
     )
 
     print(report)
+# ---------------------------------------------------
+# ROC Curve (One-vs-Rest)
+# ---------------------------------------------------
 
+print("\nGenerating ROC Curve...")
+
+# One-hot encode true labels
+y_true_bin = label_binarize(
+    y_true,
+    classes=range(len(encoder.classes_))
+)
+
+plt.figure(figsize=(8,8))
+
+for i, class_name in enumerate(encoder.classes_):
+
+    fpr, tpr, _ = roc_curve(
+        y_true_bin[:, i],
+        predictions[:, i]
+    )
+
+    roc_auc = auc(fpr, tpr)
+
+    plt.plot(
+        fpr,
+        tpr,
+        linewidth=2,
+        label=f"{class_name} (AUC = {roc_auc:.3f})"
+    )
+
+# Random classifier reference
+plt.plot(
+    [0,1],
+    [0,1],
+    linestyle="--",
+    linewidth=2,
+    color="gray",
+)
+
+plt.xlabel("False Positive Rate", fontsize=12)
+
+plt.ylabel("True Positive Rate", fontsize=12)
+
+plt.title(
+    "ROC Curve (One-vs-Rest)",
+    fontsize=15,
+    fontweight="bold"
+)
+
+plt.legend(loc="lower right")
+
+plt.grid(True)
+
+roc_path = config.RESULTS_PATH / "roc_curve.png"
+
+plt.savefig(
+    roc_path,
+    dpi=300,
+    bbox_inches="tight"
+)
+
+plt.show()
+
+print("\nROC Curve Saved")
+
+print(roc_path)
 # ---------------------------------------------------
 # Save Classification Report
 # ---------------------------------------------------

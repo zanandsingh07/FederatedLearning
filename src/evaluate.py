@@ -145,70 +145,111 @@ def evaluate_global_model():
 # Precision-Recall Curve (One-vs-Rest)
 # ---------------------------------------------------
 
+ # ---------------------------------------------------
+# Precision-Recall Curve (One-vs-Rest)
+# ---------------------------------------------------
+
     print("\nGenerating Precision-Recall Curve...")
 
-# Convert labels to one-hot encoding
     y_true_bin = label_binarize(
-    y_true,
-    classes=range(len(encoder.classes_))
+        y_true,
+        classes=range(len(encoder.classes_))
     )
 
     plt.figure(figsize=(8,8))
 
+    ap_scores = {}
+
     for i, class_name in enumerate(encoder.classes_):
 
         precision, recall, _ = precision_recall_curve(
-        y_true_bin[:, i],
-        predictions[:, i]
-    )
+            y_true_bin[:, i],
+            predictions[:, i]
+        )
 
-    ap = average_precision_score(
-        y_true_bin[:, i],
-        predictions[:, i]
-    )
+        ap = average_precision_score(
+            y_true_bin[:, i],
+            predictions[:, i]
+        )
 
-    plt.plot(
-        recall,
-        precision,
-        linewidth=2,
-        label=f"{class_name} (AP = {ap:.3f})"
-    )
+        ap_scores[class_name] = ap
 
-    plt.xlabel(
-    "Recall",
-    fontsize=12
-    )
+        plt.plot(
+            recall,
+            precision,
+            linewidth=2,
+            label=f"{class_name} (AP = {ap:.3f})"
+        )
 
-    plt.ylabel(
-    "Precision",
-    fontsize=12
-    )
+    plt.xlabel("Recall", fontsize=12)
+    plt.ylabel("Precision", fontsize=12)
 
     plt.title(
-    "Precision-Recall Curve (One-vs-Rest)",
-    fontsize=15,
-    fontweight="bold"
+        "Precision-Recall Curve (One-vs-Rest)",
+        fontsize=15,
+        fontweight="bold"
     )
 
     plt.grid(True)
-
-    plt.legend(
-    loc="lower left"
-)
+    plt.legend(loc="lower left")
 
     pr_path = config.RESULTS_PATH / "precision_recall_curve.png"
 
     plt.savefig(
-    pr_path,
-    dpi=300,
-    bbox_inches="tight"
+        pr_path,
+        dpi=300,
+        bbox_inches="tight"
     )
 
     plt.show()
 
     print("\nPrecision-Recall Curve Saved")
-
     print(pr_path)
+# ---------------------------------------------------
+# Save AP Scores
+# ---------------------------------------------------
+
+    ap_df = pd.DataFrame({
+        "Class": list(ap_scores.keys()) + [
+            "Macro Average",
+            "Weighted Average"
+        ],
+        "Average Precision": list(ap_scores.values()) + [
+            macro_ap,
+            weighted_ap
+        ]
+    })
+
+    ap_path = config.RESULTS_PATH / "average_precision.csv"
+
+    ap_df.to_csv(
+        ap_path,
+        index=False
+    )
+
+    print("\nAverage Precision Saved")
+    print(ap_path)
+# ---------------------------------------------------
+# Print Average Precision Scores
+# ---------------------------------------------------
+
+    print("\n" + "="*60)
+    print("AVERAGE PRECISION (AP)")
+    print("="*60)
+
+    for class_name, ap in ap_scores.items():
+        print(f"{class_name:10s}: {ap:.4f}")
+
+    macro_ap = np.mean(list(ap_scores.values()))
+
+    weighted_ap = average_precision_score(
+        y_true_bin,
+        predictions,
+        average="weighted"
+    )
+
+    print("\nMacro Average Precision    :", f"{macro_ap:.4f}")
+    print("Weighted Average Precision :", f"{weighted_ap:.4f}")
 # ---------------------------------------------------
 # ROC Curve (One-vs-Rest)
 # ---------------------------------------------------

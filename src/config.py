@@ -74,43 +74,15 @@ if os.path.exists("/content"):
 
     print("Running on Google Colab")
 
-    DATASET_PATH = Path(  
-    "/content/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone"
-     )
-   # DATASET_PATH = Path("/content/drive/MyDrive/KidneyCT")
+    # Dataset comes from Kaggle
+    DATASET_PATH = Path(
+        "/content/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone"
+    )
 
+    # Everything else goes to Google Drive
     MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
-
     RESULTS_PATH = Path("/content/drive/MyDrive/FederatedLearning/results")
-
     CHECKPOINT_PATH = Path("/content/drive/MyDrive/FederatedLearning/checkpoints")
-
-# Kaggle
-elif os.path.exists("/kaggle"):
-
-    print("Running on Kaggle")
-
-    DATASET_PATH = Path("/kaggle/input/kidneyct/KidneyCT")
-
-    MODELS_PATH = PROJECT_DIR / "models"
-
-    RESULTS_PATH = PROJECT_DIR / "results"
-
-    CHECKPOINT_PATH = PROJECT_DIR / "checkpoints"
-
-# Windows / Linux Local
-else:
-
-    print("Running on Local Machine")
-
-    DATASET_PATH = PROJECT_DIR / "KidneyCT"
-
-    MODELS_PATH = PROJECT_DIR / "models"
-
-    RESULTS_PATH = PROJECT_DIR / "results"
-
-    CHECKPOINT_PATH = PROJECT_DIR / "checkpoints"
-
 # =========================================================
 # Create Required Directories
 # =========================================================

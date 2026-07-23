@@ -326,28 +326,18 @@ def train_federated():
 
     history_path = config.RESULTS_PATH / "history.csv"
 
-    history_df.to_csv(
-    history_path,
-    index=False,
-)
+    history_df.to_csv(history_path, index=False)
+
+    # Backup copy in current working directory
+    history_df.to_csv("history_backup.csv", index=False)
+
     print("\nTraining history saved.")
-    print(history_path)
+    print("Drive :", history_path)
+    print("Backup:", os.path.abspath("history_backup.csv"))
     print("=" * 70)
 
     return history
 if __name__ == "__main__":
     train_federated()
 
-    print("Step 1")
-    df, encoder = load_dataset()
-
-    print("Step 2")
-    dataset_summary(df)
-
-    print("Step 3")
-    train_df, valid_df, test_df = split_dataset(df)
-
-    print("Step 4")
-    client_dfs = create_non_iid_clients(train_df)
-
-    print("Step 5")
+   

@@ -75,10 +75,9 @@ if os.path.exists("/content"):
     print("Running on Google Colab")
 
     # Dataset comes from Kaggle
-    DATASET_PATH = Path(
-        "/content/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone"
-    )
-
+    DATASET_PATH = Path(    
+    "/content/FederatedLearning/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-Stone"
+)
     # Everything else goes to Google Drive
     MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
     RESULTS_PATH = Path("/content/drive/MyDrive/FederatedLearning/results")

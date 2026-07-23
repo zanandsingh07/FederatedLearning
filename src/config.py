@@ -74,7 +74,8 @@ if os.path.exists("/content"):
 
     print("Running on Google Colab")
 
-    DATASET_PATH = Path("/content/drive/MyDrive/KidneyCT")
+    DATASET_PATH = Path("/content/CT-KIDNEY-DATASET-Normal-Cyst-Tumor-and-Stone")
+   # DATASET_PATH = Path("/content/drive/MyDrive/KidneyCT")
 
     MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
 
@@ -119,15 +120,3 @@ RESULTS_PATH.mkdir(parents=True, exist_ok=True)
 CHECKPOINT_PATH.mkdir(parents=True, exist_ok=True)
 
 
-# Google Colab
-if os.path.exists("/content"):
-
-    print("Running on Google Colab")
-
-    DATASET_PATH = Path("/content/drive/MyDrive/FederatedLearning/KidneyCT")
-
-    MODELS_PATH = Path("/content/drive/MyDrive/FederatedLearning/models")
-
-    RESULTS_PATH = Path("/content/drive/MyDrive/FederatedLearning/results")
-
-    CHECKPOINT_PATH = Path("/content/drive/MyDrive/FederatedLearning/checkpoints")

@@ -19,7 +19,7 @@ from src.dataset import (
     verify_no_data_leakage,
     create_tf_dataset,
     create_iid_clients,
-    create_non_iid_clients,
+    create_balanced_noniid_clients,
 )
 
 from src.client import Client
@@ -75,14 +75,14 @@ def train_federated():
     # Create Clients
     # --------------------------------------------
 
-    if config.DATA_DISTRIBUTION == "iid":
+    if config.USE_NON_IID == True:
 
-      client_dfs = create_iid_clients(train_df)
+        client_dfs = create_balanced_noniid_clients(train_df)
 
     else:
 
-     client_dfs = create_non_iid_clients(train_df)
-    clients = []
+     client_dfs = create_iid_clients(train_df)
+     clients = []
 
     for i, client_df in enumerate(client_dfs):
 

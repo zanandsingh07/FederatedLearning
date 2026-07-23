@@ -218,61 +218,102 @@ def create_iid_clients(train_df):
 # Non-IID Client Creation (Dirichlet Distribution)
 # =========================================================
 
-def create_non_iid_clients(train_df):
+def create_balanced_noniid_clients(train_df):
     """
-    Create Non-IID client datasets using Dirichlet distribution.
+    Balanced Dirichlet Non-IID partition.
+
+    Every client receives approximately the same number
+    of images while keeping Non-IID class distributions.
     """
 
-    alpha = config.DIRICHLET_ALPHA
+    np.random.seed(config.RANDOM_SEED)
 
     num_clients = config.NUM_CLIENTS
+    alpha = config.DIRICHLET_ALPHA
+
+    target_size = len(train_df) // num_clients
 
     client_indices = [[] for _ in range(num_clients)]
 
-    labels = sorted(train_df["label"].unique())
+    classes = sorted(train_df["label"].unique())
 
-    for label in labels:
+    # Process one class at a time
+    for cls in classes:
 
-        label_idx = train_df[
-            train_df["label"] == label
-        ].index.values
+        cls_idx = train_df.index[
+            train_df["label"] == cls
+        ].tolist()
 
-        np.random.shuffle(label_idx)
+        np.random.shuffle(cls_idx)
 
         proportions = np.random.dirichlet(
             np.repeat(alpha, num_clients)
         )
 
         proportions = (
-            proportions / proportions.sum()
-        )
-
-        split_points = (
-            np.cumsum(proportions) * len(label_idx)
+            np.cumsum(proportions) * len(cls_idx)
         ).astype(int)[:-1]
 
-        split_indices = np.split(
-            label_idx,
-            split_points
-        )
+        split = np.split(cls_idx, proportions)
 
         for client_id in range(num_clients):
-
             client_indices[client_id].extend(
-                split_indices[client_id]
+                split[client_id]
             )
+
+    # ----------------------------------------
+    # Balance client sizes
+    # ----------------------------------------
+
+    overflow = []
+
+    balanced_clients = []
+
+    for idx in client_indices:
+
+        np.random.shuffle(idx)
+
+        if len(idx) > target_size:
+
+            overflow.extend(idx[target_size:])
+
+            idx = idx[:target_size]
+
+        balanced_clients.append(idx)
+
+    np.random.shuffle(overflow)
+
+    # Fill small clients
+
+    for idx in balanced_clients:
+
+        while len(idx) < target_size and overflow:
+
+            idx.append(overflow.pop())
+
+    # Remaining overflow
+
+    i = 0
+
+    while overflow:
+
+        balanced_clients[i % num_clients].append(
+            overflow.pop()
+        )
+
+        i += 1
+
+    # Convert to DataFrames
 
     client_datasets = []
 
     print("\n" + "=" * 70)
-    print("NON-IID CLIENT DISTRIBUTION")
+    print("BALANCED NON-IID CLIENT DISTRIBUTION")
     print("=" * 70)
 
-    for i, indices in enumerate(client_indices):
+    for i, idx in enumerate(balanced_clients):
 
-        client_df = train_df.loc[indices]
-
-        client_df = client_df.sample(
+        client_df = train_df.loc[idx].sample(
             frac=1,
             random_state=config.RANDOM_SEED
         ).reset_index(drop=True)
@@ -281,7 +322,9 @@ def create_non_iid_clients(train_df):
 
         print(f"\nClient {i+1}")
 
-        print(client_df["class_name"].value_counts())
+        print(
+            client_df["class_name"].value_counts()
+        )
 
     return client_datasets
 

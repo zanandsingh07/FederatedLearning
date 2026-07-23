@@ -19,6 +19,7 @@ from src.dataset import (
     verify_no_data_leakage,
     create_tf_dataset,
     create_iid_clients,
+    create_non_iid_clients,
 )
 
 from src.client import Client
@@ -74,8 +75,13 @@ def train_federated():
     # Create Clients
     # --------------------------------------------
 
-    client_dfs = create_iid_clients(train_df)
+    if config.DATA_DISTRIBUTION == "iid":
 
+      client_dfs = create_iid_clients(train_df)
+
+    else:
+
+     client_dfs = create_non_iid_clients(train_df)
     clients = []
 
     for i, client_df in enumerate(client_dfs):
@@ -94,10 +100,19 @@ def train_federated():
 
         )
 
-    print()
+        print()
 
-    print("Total Clients :", len(clients))
+        print("Total Clients :", len(clients))
+        print("\n" + "=" * 70)
+        print("CLIENT DATASET SUMMARY")
+        print("=" * 70)
 
+    for i, client_df in enumerate(client_dfs):
+
+        print(
+            f"Client {i+1:02d} : "
+            f"{len(client_df)} images"
+        )
     # --------------------------------------------
     # Server
     # --------------------------------------------

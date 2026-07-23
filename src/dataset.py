@@ -214,6 +214,76 @@ def create_iid_clients(train_df):
         client_datasets.append(client_df)
 
     return client_datasets
+# =========================================================
+# Non-IID Client Creation (Dirichlet Distribution)
+# =========================================================
+
+def create_non_iid_clients(train_df):
+    """
+    Create Non-IID client datasets using Dirichlet distribution.
+    """
+
+    alpha = config.DIRICHLET_ALPHA
+
+    num_clients = config.NUM_CLIENTS
+
+    client_indices = [[] for _ in range(num_clients)]
+
+    labels = sorted(train_df["label"].unique())
+
+    for label in labels:
+
+        label_idx = train_df[
+            train_df["label"] == label
+        ].index.values
+
+        np.random.shuffle(label_idx)
+
+        proportions = np.random.dirichlet(
+            np.repeat(alpha, num_clients)
+        )
+
+        proportions = (
+            proportions / proportions.sum()
+        )
+
+        split_points = (
+            np.cumsum(proportions) * len(label_idx)
+        ).astype(int)[:-1]
+
+        split_indices = np.split(
+            label_idx,
+            split_points
+        )
+
+        for client_id in range(num_clients):
+
+            client_indices[client_id].extend(
+                split_indices[client_id]
+            )
+
+    client_datasets = []
+
+    print("\n" + "=" * 70)
+    print("NON-IID CLIENT DISTRIBUTION")
+    print("=" * 70)
+
+    for i, indices in enumerate(client_indices):
+
+        client_df = train_df.loc[indices]
+
+        client_df = client_df.sample(
+            frac=1,
+            random_state=config.RANDOM_SEED
+        ).reset_index(drop=True)
+
+        client_datasets.append(client_df)
+
+        print(f"\nClient {i+1}")
+
+        print(client_df["class_name"].value_counts())
+
+    return client_datasets
 
 def get_client_dataset(client_df):
     return create_tf_dataset(client_df, shuffle=True)

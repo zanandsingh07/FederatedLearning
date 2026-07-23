@@ -21,7 +21,13 @@ IMAGE_WIDTH = 128
 IMAGE_SIZE = (IMAGE_HEIGHT, IMAGE_WIDTH)
 
 NUM_CLASSES = 4
+# =========================================================
+# Data Distribution
+# =========================================================
 
+DATA_DISTRIBUTION = "non_iid"      # "iid" or "non_iid"
+
+DIRICHLET_ALPHA = 0.3
 # =========================================================
 # Training Configuration
 # =========================================================

@@ -81,8 +81,8 @@ def train_federated():
 
     else:
 
-     client_dfs = create_iid_clients(train_df)
-     clients = []
+         client_dfs = create_iid_clients(train_df)
+    clients = []
 
     for i, client_df in enumerate(client_dfs):
 

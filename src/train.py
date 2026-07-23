@@ -344,6 +344,8 @@ def train_federated():
     print("=" * 70)
 
     return history
+if __name__ == "__main__":
+    train_federated()
 
     print("Step 1")
     df, encoder = load_dataset()

@@ -87,32 +87,23 @@ def train_federated():
     for i, client_df in enumerate(client_dfs):
 
         clients.append(
-
             Client(
-
                 client_id=i + 1,
-
                 train_df=client_df,
-
                 valid_df=None,
-
             )
-
         )
 
-        print()
+    print()
+    print("Total Clients :", len(clients))
 
-        print("Total Clients :", len(clients))
-        print("\n" + "=" * 70)
-        print("CLIENT DATASET SUMMARY")
-        print("=" * 70)
+    print("\n" + "=" * 70)
+    print("CLIENT DATASET SUMMARY")
+    print("=" * 70)
 
     for i, client_df in enumerate(client_dfs):
 
-        print(
-            f"Client {i+1:02d} : "
-            f"{len(client_df)} images"
-        )
+        print(f"Client {i+1:02d} : {len(client_df)} images")
     # --------------------------------------------
     # Server
     # --------------------------------------------

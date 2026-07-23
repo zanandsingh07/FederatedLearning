@@ -344,3 +344,17 @@ def train_federated():
     print("=" * 70)
 
     return history
+
+    print("Step 1")
+    df, encoder = load_dataset()
+
+    print("Step 2")
+    dataset_summary(df)
+
+    print("Step 3")
+    train_df, valid_df, test_df = split_dataset(df)
+
+    print("Step 4")
+    client_dfs = create_non_iid_clients(train_df)
+
+    print("Step 5")
